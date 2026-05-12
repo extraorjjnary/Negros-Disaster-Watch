@@ -1,4 +1,3 @@
-// seedData.js — NegrosWatch static seed data
 export const SENSOR_STATIONS = [
   {
     id: 'S01',
@@ -171,7 +170,7 @@ export const PREDICTIONS = [
     sev: 'high',
     timeframe: 'Next 12–24 hours',
     action:
-      'Road monitoring advisory; residents in mountain barangays should prepare for evacuation.',
+      'Road monitoring and advisory; residents in mountain barangays should prepare for evacuation.',
   },
   {
     type: 'Volcanic Unrest (Kanlaon)',
@@ -211,7 +210,7 @@ export const ACTIVE_ALERTS = [
   {
     sev: 'warning',
     title: 'HEAVY RAINFALL WARNING — Silay City',
-    desc: 'Rainfall intensity at 68mm/hr. PAGASA Orange rainfall advisory in effect. Expect localized flooding.',
+    desc: 'Rainfall intensity at 68mm/hr. PAGASA maintains Orange rainfall advisory. Expect localized flooding.',
     time: '10:15',
   },
   {
@@ -230,7 +229,7 @@ export const ACTIVE_ALERTS = [
 
 export const ALERT_LOG = [
   {
-    dt: '2024-11-14 10:42',
+    dt: '2026-05-12 10:42',
     type: 'Flood Alert',
     sev: 'Critical',
     area: 'Talisay City — 8 Barangays',
@@ -239,7 +238,7 @@ export const ALERT_LOG = [
     by: 'Operations Center',
   },
   {
-    dt: '2024-11-14 10:15',
+    dt: '2026-05-12 10:15',
     type: 'Rainfall Warning',
     sev: 'Warning',
     area: 'Silay City',
@@ -248,7 +247,7 @@ export const ALERT_LOG = [
     by: 'Auto-AI System',
   },
   {
-    dt: '2024-11-14 09:30',
+    dt: '2026-05-12 09:30',
     type: 'Seismic Watch',
     sev: 'Watch',
     area: 'La Castellana, Bago, Murcia',
@@ -257,7 +256,7 @@ export const ALERT_LOG = [
     by: 'Seismic Monitoring Unit',
   },
   {
-    dt: '2024-11-14 08:00',
+    dt: '2026-05-12 08:00',
     type: 'Weather Update',
     sev: 'Info',
     area: 'Province-wide',
@@ -266,7 +265,7 @@ export const ALERT_LOG = [
     by: 'PAGASA Visayas',
   },
   {
-    dt: '2024-11-13 19:15',
+    dt: '2026-05-11 19:15',
     type: 'Flood Warning',
     sev: 'Warning',
     area: 'Kabankalan City',
@@ -275,7 +274,7 @@ export const ALERT_LOG = [
     by: 'Operations Center',
   },
   {
-    dt: '2024-11-13 14:00',
+    dt: '2026-05-11 14:00',
     type: 'Evacuation Order',
     sev: 'Critical',
     area: 'Hinigaran — 3 Barangays',
@@ -284,7 +283,7 @@ export const ALERT_LOG = [
     by: 'Municipal DRRMO',
   },
   {
-    dt: '2024-11-12 07:00',
+    dt: '2026-05-10 07:00',
     type: 'All-Clear Notice',
     sev: 'Info',
     area: 'Himamaylan City',
@@ -293,16 +292,16 @@ export const ALERT_LOG = [
     by: 'Operations Center',
   },
   {
-    dt: '2024-11-11 22:30',
+    dt: '2026-05-09 22:30',
     type: 'Typhoon Warning',
     sev: 'Critical',
     area: 'Northern Negros',
     ch: 'SMS',
     recip: '89,300',
-    by: 'PAGASA / Operations',
+    by: 'PAGASA / PDRRMO',
   },
   {
-    dt: '2024-11-11 11:00',
+    dt: '2026-05-09 11:00',
     type: 'Storm Surge Alert',
     sev: 'Warning',
     area: 'Cadiz, Escalante, Sara',
@@ -311,7 +310,7 @@ export const ALERT_LOG = [
     by: 'Operations Center',
   },
   {
-    dt: '2024-11-10 16:30',
+    dt: '2026-05-08 16:30',
     type: 'Landslide Watch',
     sev: 'Watch',
     area: 'Don Salvador Benedicto',
@@ -386,7 +385,7 @@ export const EVAC_CENTERS = [
 
 export const EMERGENCY_CONTACTS = [
   {
-    agency: 'Negros Occidental DRRMO',
+    agency: 'PDRRMO Negros Occidental',
     location: 'Bacolod City',
     tel: '(034) 433-0000',
     role: 'Provincial Coordinator',
@@ -416,7 +415,7 @@ export const EMERGENCY_CONTACTS = [
     role: 'Volcanic & Seismic',
   },
   {
-    agency: 'Bureau of Fire Protection',
+    agency: 'BFP Negros Occidental',
     location: 'Bacolod City',
     tel: '(034) 432-5656',
     role: 'Fire & Rescue',
