@@ -2,11 +2,11 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/authStore.js';
-import { Eye, EyeOff, Shield } from 'lucide-vue-next';
+import { Eye, EyeOff } from 'lucide-vue-next';
 
 const router = useRouter();
 const auth = useAuthStore();
-const username = ref('pdrrmo.admin');
+const username = ref('admin');
 const password = ref('password');
 const remember = ref(true);
 const showPw = ref(false);
@@ -20,14 +20,18 @@ async function doLogin() {
     return;
   }
   loading.value = true;
-  // Simulate network delay
-  await new Promise((r) => setTimeout(r, 900));
+  await new Promise((r) => setTimeout(r, 800));
   loading.value = false;
-  if (username.value === 'pdrrmo.admin' && password.value === 'password') {
+
+  // Demo credentials
+  if (
+    (username.value === 'admin' || username.value === 'pdrrmo.admin') &&
+    password.value === 'password'
+  ) {
     auth.login();
     router.push('/dashboard');
   } else {
-    error.value = 'Invalid credentials. Try pdrrmo.admin / password.';
+    error.value = 'Invalid credentials. Use admin / password.';
   }
 }
 </script>
@@ -50,7 +54,7 @@ async function doLogin() {
     "
   >
     <div class="w-full max-w-md">
-      <!-- Logo/Brand -->
+      <!-- Header mark -->
       <div class="text-center mb-8">
         <div
           class="inline-flex items-center justify-center w-16 h-16 bg-primary rounded-2xl mb-4 text-3xl shadow-xl"
@@ -61,20 +65,20 @@ async function doLogin() {
           Republic of the Philippines
         </p>
         <p class="text-[11px] text-muted uppercase tracking-[1.5px]">
-          Province of Negros Occidental — PDRRMO
+          Province of Negros Occidental
         </p>
       </div>
 
       <!-- Card -->
-      <div
-        class="bg-panel border border-border-light rounded-2xl p-8 shadow-2xl"
-      >
+      <div class="bg-panel border border-border rounded-2xl p-8 shadow-2xl">
         <h1 class="font-cond font-bold text-3xl text-gradient-blue mb-1">
-          AI-IoT DisasterWatch
+          NegrosWatch
         </h1>
-        <p class="text-[13px] text-muted mb-7 leading-relaxed">
-          Early Warning &amp; Preparedness System<br />
-          Negros Occidental — Powered by AI &amp; IoT
+        <p class="text-[13.5px] font-medium text-muted mb-1">
+          AI & IoT Disaster Early Warning System
+        </p>
+        <p class="text-[12px] text-faint mb-7">
+          Negros Occidental — Authorized Access Only
         </p>
 
         <!-- Error -->
@@ -94,7 +98,7 @@ async function doLogin() {
           <input
             v-model="username"
             type="text"
-            placeholder="e.g. pdrrmo.admin"
+            placeholder="admin"
             class="w-full bg-card border border-border text-ink px-4 py-2.5 rounded-lg text-[13.5px] placeholder-faint focus:outline-none focus:border-bright focus:bg-hover transition-all"
             @keyup.enter="doLogin"
           />
@@ -151,16 +155,9 @@ async function doLogin() {
         </button>
 
         <p class="text-center text-[11px] text-faint mt-6 leading-relaxed">
-          Authorized personnel only. All access is logged and monitored.<br />
-          For technical support: ICT Division — (034) 433-XXXX
+          Authorized personnel only. All sessions are logged and monitored.<br />
         </p>
       </div>
-
-      <!-- Demo hint -->
-      <p class="text-center text-[11.5px] text-muted mt-4">
-        Demo: <span class="font-mono-custom text-bright">pdrrmo.admin</span> /
-        <span class="font-mono-custom text-bright">password</span>
-      </p>
     </div>
   </div>
 </template>

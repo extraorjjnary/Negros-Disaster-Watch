@@ -9,55 +9,44 @@ function jitter(v, range) {
   return +(v + (Math.random() - 0.5) * range).toFixed(2);
 }
 
-function deriveStatus(s) {
-  const ratio = s.value / s.threshold;
-  if (ratio >= 1.4) return 'Critical';
-  if (ratio >= 0.9) return 'Warning';
-  if (ratio >= 0.6) return 'Watch';
+function deriveStatus(value, threshold) {
+  const r = value / threshold;
+  if (r >= 1.4) return 'Critical';
+  if (r >= 0.95) return 'Warning';
+  if (r >= 0.65) return 'Watch';
   return 'Normal';
 }
 
+// Per-type jitter config
+const JITTER = {
+  Rainfall: { range: 7, min: 0, max: 110 },
+  'Water Level': { range: 0.18, min: 0, max: 5.5 },
+  Seismic: { range: 0.22, min: 0.1, max: 4.2 },
+  'Storm Surge': { range: 0.09, min: 0, max: 3 },
+  'SO₂ Flux': { range: 70, min: 80, max: 3200 },
+};
+
 export const useSensorStore = defineStore('sensors', () => {
-  // Deep-clone seed so we can mutate
   const stations = ref(SENSOR_STATIONS.map((s) => ({ ...s })));
 
-  // Overall risk level driven by worst sensor
+  // Overall risk driven by worst sensor — lowercase to match RiskBanner props
   const riskLevel = computed(() => {
-    const statusPriority = { Critical: 4, Warning: 3, Watch: 2, Normal: 1 };
-    const max = Math.max(
-      ...stations.value.map((s) => statusPriority[s.status] || 1),
-    );
+    const priority = { Critical: 4, Warning: 3, Watch: 2, Normal: 1 };
+    const max = Math.max(...stations.value.map((s) => priority[s.status] ?? 1));
     if (max >= 4) return 'critical';
     if (max >= 3) return 'warning';
     if (max >= 2) return 'watch';
     return 'safe';
   });
 
-  // Jitter configs per type
-  const jitterMap = {
-    Rainfall: { range: 6, min: 0, max: 100 },
-    'Water Level': { range: 0.15, min: 0, max: 5 },
-    Seismic: { range: 0.2, min: 0.1, max: 4 },
-    'Storm Surge': { range: 0.08, min: 0, max: 3 },
-    'SO₂ Flux': { range: 60, min: 100, max: 3000 },
-    Rainfall2: { range: 4, min: 0, max: 80 },
-  };
-
+  // Called every 5 s from DashboardLayout's setInterval
   function tick() {
     stations.value = stations.value.map((s) => {
-      const cfg = jitterMap[s.type] || { range: 3, min: 0, max: 100 };
+      const cfg = JITTER[s.type] ?? { range: 4, min: 0, max: 80 };
       const newVal = clamp(jitter(s.value, cfg.range), cfg.min, cfg.max);
-      const updated = { ...s, value: newVal };
-      updated.status = deriveStatus(updated);
-      return updated;
+      return { ...s, value: newVal, status: deriveStatus(newVal, s.threshold) };
     });
   }
 
-  // Start interval
-  const interval = setInterval(tick, 5000);
-  function stop() {
-    clearInterval(interval);
-  }
-
-  return { stations, riskLevel, stop };
+  return { stations, riskLevel, tick };
 });

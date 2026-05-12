@@ -1,10 +1,6 @@
 <script setup>
 import { computed } from 'vue';
-
-const props = defineProps({
-  level: { type: String, default: 'safe' }, // safe | watch | warning | critical
-});
-
+const props = defineProps({ level: { type: String, default: 'safe' } });
 const config = {
   safe: {
     bg: 'bg-safe/10',
@@ -21,7 +17,7 @@ const config = {
     icon: '👁️',
     label: 'WATCH',
     title: 'Elevated Monitoring Active',
-    desc: 'One or more sensors approaching threshold. PDRRMO teams on monitoring standby.',
+    desc: 'One or more sensors approaching threshold. Disaster response teams on monitoring standby.',
     textCls: 'text-caution',
   },
   warning: {
@@ -30,7 +26,7 @@ const config = {
     icon: '⚠️',
     label: 'WARNING',
     title: 'Elevated Flood Risk — Northern Sector',
-    desc: 'Heavy rainfall detected in Silay and Talisay. River levels rising. MDRRMO teams on standby.',
+    desc: 'Heavy rainfall detected in Silay and Talisay. River levels rising. Response teams on standby.',
     textCls: 'text-warning',
   },
   critical: {
@@ -44,7 +40,6 @@ const config = {
     pulse: true,
   },
 };
-
 const cfg = computed(() => config[props.level] || config.safe);
 const now = computed(() =>
   new Date().toLocaleTimeString('en-PH', {
@@ -54,7 +49,6 @@ const now = computed(() =>
   }),
 );
 </script>
-
 <template>
   <div
     :class="[
@@ -65,29 +59,24 @@ const now = computed(() =>
     ]"
   >
     <span class="text-3xl">{{ cfg.icon }}</span>
-
     <div
       :class="[
-        'font-cond font-bold text-2xl px-4 py-1.5 rounded-md',
+        'font-cond font-bold text-2xl px-4 py-1.5 rounded-md border',
         cfg.textCls,
         cfg.bg,
-        'border',
         cfg.border,
       ]"
     >
       {{ cfg.label }}
     </div>
-
     <div class="flex-1 min-w-0">
       <p class="text-[14px] font-semibold text-ink mb-0.5">{{ cfg.title }}</p>
       <p class="text-[12.5px] text-muted">{{ cfg.desc }}</p>
     </div>
-
     <div
       class="text-right text-[11px] text-muted font-mono-custom whitespace-nowrap"
     >
-      Last updated<br />
-      <span class="text-ink">{{ now }} PHT</span>
+      Last updated<br /><span class="text-ink">{{ now }} PHT</span>
     </div>
   </div>
 </template>

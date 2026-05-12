@@ -1,7 +1,4 @@
-// ============================================================
-// SEED DATA — Negros Occidental AI-IoT DisasterWatch
-// ============================================================
-
+// seedData.js — NegrosWatch static seed data
 export const SENSOR_STATIONS = [
   {
     id: 'S01',
@@ -174,7 +171,7 @@ export const PREDICTIONS = [
     sev: 'high',
     timeframe: 'Next 12–24 hours',
     action:
-      'Road monitoring and advisory; residents in mountain barangays should prepare for evacuation.',
+      'Road monitoring advisory; residents in mountain barangays should prepare for evacuation.',
   },
   {
     type: 'Volcanic Unrest (Kanlaon)',
@@ -214,7 +211,7 @@ export const ACTIVE_ALERTS = [
   {
     sev: 'warning',
     title: 'HEAVY RAINFALL WARNING — Silay City',
-    desc: 'Rainfall intensity at 68mm/hr. PAGASA maintains Orange rainfall advisory. Expect localized flooding.',
+    desc: 'Rainfall intensity at 68mm/hr. PAGASA Orange rainfall advisory in effect. Expect localized flooding.',
     time: '10:15',
   },
   {
@@ -239,7 +236,7 @@ export const ALERT_LOG = [
     area: 'Talisay City — 8 Barangays',
     ch: 'SMS',
     recip: '12,450',
-    by: 'PDRRMO Operations',
+    by: 'Operations Center',
   },
   {
     dt: '2024-11-14 10:15',
@@ -257,7 +254,7 @@ export const ALERT_LOG = [
     area: 'La Castellana, Bago, Murcia',
     ch: 'SMS',
     recip: '24,100',
-    by: 'PHIVOLCS-PDRRMO',
+    by: 'Seismic Monitoring Unit',
   },
   {
     dt: '2024-11-14 08:00',
@@ -275,7 +272,7 @@ export const ALERT_LOG = [
     area: 'Kabankalan City',
     ch: 'Radio',
     recip: '45,000',
-    by: 'PDRRMO Operations',
+    by: 'Operations Center',
   },
   {
     dt: '2024-11-13 14:00',
@@ -293,7 +290,7 @@ export const ALERT_LOG = [
     area: 'Himamaylan City',
     ch: 'App',
     recip: '18,400',
-    by: 'PDRRMO Operations',
+    by: 'Operations Center',
   },
   {
     dt: '2024-11-11 22:30',
@@ -302,7 +299,7 @@ export const ALERT_LOG = [
     area: 'Northern Negros',
     ch: 'SMS',
     recip: '89,300',
-    by: 'PAGASA / PDRRMO',
+    by: 'PAGASA / Operations',
   },
   {
     dt: '2024-11-11 11:00',
@@ -311,7 +308,7 @@ export const ALERT_LOG = [
     area: 'Cadiz, Escalante, Sara',
     ch: 'Radio',
     recip: '32,000',
-    by: 'PDRRMO Operations',
+    by: 'Operations Center',
   },
   {
     dt: '2024-11-10 16:30',
@@ -389,13 +386,13 @@ export const EVAC_CENTERS = [
 
 export const EMERGENCY_CONTACTS = [
   {
-    agency: 'PDRRMO Negros Occidental',
+    agency: 'Negros Occidental DRRMO',
     location: 'Bacolod City',
     tel: '(034) 433-0000',
     role: 'Provincial Coordinator',
   },
   {
-    agency: 'Bacolod CDRRMO',
+    agency: 'Bacolod City DRRMO',
     location: 'Bacolod City',
     tel: '(034) 432-0021',
     role: 'City Disaster Response',
@@ -419,7 +416,7 @@ export const EMERGENCY_CONTACTS = [
     role: 'Volcanic & Seismic',
   },
   {
-    agency: 'BFP Negros Occidental',
+    agency: 'Bureau of Fire Protection',
     location: 'Bacolod City',
     tel: '(034) 432-5656',
     role: 'Fire & Rescue',

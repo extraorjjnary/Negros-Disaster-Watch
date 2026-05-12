@@ -1,11 +1,7 @@
 <script setup>
 import { computed } from 'vue';
-
-const props = defineProps({
-  sensor: { type: Object, required: true },
-});
-
-const statusConfig = {
+const props = defineProps({ sensor: { type: Object, required: true } });
+const statusCfg = {
   Critical: {
     cls: 'sensor-critical',
     dotCls: 'bg-danger',
@@ -35,7 +31,6 @@ const statusConfig = {
     label: 'NORMAL',
   },
 };
-
 const typeIcon = {
   Rainfall: '🌧️',
   'Water Level': '🌊',
@@ -43,61 +38,47 @@ const typeIcon = {
   'Storm Surge': '🌊',
   'SO₂ Flux': '🌫️',
 };
-
-const cfg = computed(
-  () => statusConfig[props.sensor.status] || statusConfig.Normal,
-);
+const cfg = computed(() => statusCfg[props.sensor.status] || statusCfg.Normal);
 const pct = computed(() =>
   Math.min(100, (props.sensor.value / props.sensor.threshold) * 85),
 );
-const displayVal = computed(() => {
+const disp = computed(() => {
   const v = props.sensor.value;
   return Number.isInteger(v) ? v : v.toFixed(1);
 });
 </script>
-
 <template>
-  <div :class="['dash-card border', cfg.cls, 'transition-colors duration-500']">
-    <!-- Header -->
+  <div :class="['dash-card border transition-colors duration-500', cfg.cls]">
     <div class="flex items-start justify-between mb-3">
       <span class="text-2xl">{{ typeIcon[sensor.type] || '📡' }}</span>
       <span class="font-mono-custom text-[10px] text-faint">{{
         sensor.id
       }}</span>
     </div>
-
-    <!-- Label & location -->
     <p
       class="text-[11px] font-semibold uppercase tracking-[0.8px] text-muted mb-0.5"
     >
       {{ sensor.type }}
     </p>
     <p class="text-[11px] text-faint italic mb-2">📍 {{ sensor.muni }}</p>
-
-    <!-- Value -->
     <p
       :class="[
         'font-mono-custom text-3xl font-medium leading-none mb-1',
         cfg.textCls,
       ]"
     >
-      {{ displayVal }}
+      {{ disp }}
     </p>
     <p class="text-[12px] text-muted mb-3">{{ sensor.unit }}</p>
-
-    <!-- Status badge -->
     <div
       :class="[
         'inline-flex items-center gap-1.5 text-[11px] font-bold px-2 py-1 rounded',
         cfg.textCls,
-        'bg-current/10',
       ]"
+      style="background: color-mix(in srgb, currentColor 12%, transparent)"
     >
-      <span :class="['status-dot', cfg.dotCls]" />
-      {{ cfg.label }}
+      <span :class="['status-dot', cfg.dotCls]" />{{ cfg.label }}
     </div>
-
-    <!-- Mini bar -->
     <div class="mini-bar">
       <div
         :class="['mini-bar-fill', cfg.barCls]"

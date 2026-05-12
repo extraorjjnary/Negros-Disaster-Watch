@@ -7,12 +7,15 @@ import SensorCard from '@/components/sensors/SensorCard.vue';
 import AlertItem from '@/components/ui/AlertItem.vue';
 import PredictionItem from '@/components/ui/PredictionItem.vue';
 
-const sensor = useSensorStore();
-const heroSensors = computed(() => sensor.stations.slice(0, 4));
+const sensorStore = useSensorStore();
+const heroSensors = computed(() => sensorStore.stations.slice(0, 4));
 const topPreds = PREDICTIONS.slice(0, 3);
 
-let L, map;
+// Leaflet map
+let L = null,
+  mapInstance = null;
 const mapEl = ref(null);
+
 const pinColors = {
   Critical: '#dc2626',
   Warning: '#ea580c',
@@ -20,46 +23,54 @@ const pinColors = {
   Normal: '#16a34a',
 };
 
+function makePin(color) {
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="34" viewBox="0 0 28 34">
+    <circle cx="14" cy="14" r="13" fill="${color}" fill-opacity="0.2" stroke="${color}" stroke-width="1.5"/>
+    <circle cx="14" cy="14" r="7" fill="${color}"/>
+    <line x1="14" y1="27" x2="14" y2="33" stroke="${color}" stroke-width="2"/>
+  </svg>`;
+}
+
 function buildPopup(s) {
-  const col = pinColors[s.status] || '#16a34a';
+  const c = pinColors[s.status] || '#16a34a';
   return `<div style="min-width:180px">
     <p style="font-weight:700;font-size:13px;margin-bottom:4px;color:#e8eeff">${s.name}</p>
     <p style="font-size:11px;color:#8ba0c8;margin-bottom:6px">📍 ${s.muni}</p>
-    <p style="font-family:monospace;font-size:16px;color:${col};font-weight:600">${typeof s.value === 'number' ? s.value.toFixed(1) : s.value} <span style="font-size:11px;color:#8ba0c8">${s.unit}</span></p>
-    <span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;color:${col};background:${col}22;border:1px solid ${col}44">${s.status}</span>
+    <p style="font-family:monospace;font-size:16px;color:${c};font-weight:600">${typeof s.value === 'number' ? s.value.toFixed(1) : s.value} <span style="font-size:11px;color:#8ba0c8">${s.unit}</span></p>
+    <span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;color:${c};background:${c}22;border:1px solid ${c}44">${s.status}</span>
   </div>`;
 }
 
 onMounted(async () => {
   L = (await import('leaflet')).default;
-  map = L.map(mapEl.value, {
+  mapInstance = L.map(mapEl.value, {
     zoomControl: true,
     scrollWheelZoom: true,
   }).setView([10.5, 122.95], 9);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© OpenStreetMap contributors',
+    attribution: '© OpenStreetMap',
     maxZoom: 18,
-  }).addTo(map);
-  sensor.stations.forEach((s) => {
+  }).addTo(mapInstance);
+  sensorStore.stations.forEach((s) => {
     const col = pinColors[s.status] || '#16a34a';
-    const svgPin = `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="34" viewBox="0 0 28 34">
-      <circle cx="14" cy="14" r="13" fill="${col}" fill-opacity="0.2" stroke="${col}" stroke-width="1.5"/>
-      <circle cx="14" cy="14" r="7" fill="${col}"/>
-      <line x1="14" y1="27" x2="14" y2="33" stroke="${col}" stroke-width="2"/>
-    </svg>`;
     const icon = L.divIcon({
-      html: svgPin,
+      html: makePin(col),
       iconSize: [28, 34],
       iconAnchor: [14, 33],
       className: '',
     });
     L.marker([s.lat, s.lng], { icon })
-      .addTo(map)
+      .addTo(mapInstance)
       .bindPopup(buildPopup(s), { maxWidth: 220 });
   });
 });
+
+// CRITICAL: destroy map on unmount to prevent Leaflet "already initialized" error
 onUnmounted(() => {
-  if (map) map.remove();
+  if (mapInstance) {
+    mapInstance.remove();
+    mapInstance = null;
+  }
 });
 </script>
 
@@ -74,7 +85,7 @@ onUnmounted(() => {
       </p>
     </div>
 
-    <RiskBanner :level="sensor.riskLevel" />
+    <RiskBanner :level="sensorStore.riskLevel" />
 
     <div class="flex items-center justify-between mb-3">
       <div>
@@ -91,11 +102,13 @@ onUnmounted(() => {
         </p>
       </div>
     </div>
+
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
       <SensorCard v-for="s in heroSensors" :key="s.id" :sensor="s" />
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <!-- Map panel -->
       <div>
         <h2
           class="font-cond font-bold text-[16px] text-ink mb-3 flex items-center gap-2"
@@ -106,7 +119,7 @@ onUnmounted(() => {
           >
         </h2>
         <div class="dash-card p-0 overflow-hidden rounded-xl">
-          <div ref="mapEl" class="w-full h-[340px] rounded-xl" />
+          <div ref="mapEl" class="w-full h-[340px]" />
         </div>
         <div class="flex gap-4 mt-2 flex-wrap">
           <div
@@ -127,6 +140,7 @@ onUnmounted(() => {
         </div>
       </div>
 
+      <!-- Predictions + Alerts -->
       <div>
         <h2 class="font-cond font-bold text-[16px] text-ink mb-3">
           🤖 AI Predictions (Next 24h)

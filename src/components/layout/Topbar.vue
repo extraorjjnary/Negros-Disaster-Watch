@@ -9,7 +9,7 @@ defineEmits(['toggle-sidebar']);
 const route = useRoute();
 const auth = useAuthStore();
 
-// Clock
+// ── Live clock
 const clock = ref('');
 function updateClock() {
   clock.value =
@@ -21,14 +21,14 @@ function updateClock() {
       timeZone: 'Asia/Manila',
     }) + ' PHT';
 }
-let clockInterval;
+let clockTimer = null;
 onMounted(() => {
   updateClock();
-  clockInterval = setInterval(updateClock, 1000);
+  clockTimer = setInterval(updateClock, 1000);
 });
-onUnmounted(() => clearInterval(clockInterval));
+onUnmounted(() => clearInterval(clockTimer));
 
-// Notifications drawer
+// ── Notifications
 const notifOpen = ref(false);
 const notifications = [
   {
@@ -52,15 +52,13 @@ const notifications = [
     time: '09:00 AM',
   },
 ];
-
-const pageLabel = () => route.meta?.label || 'Dashboard';
 </script>
 
 <template>
   <header
-    class="h-[60px] min-h-[60px] bg-panel border-b border-border flex items-center px-4 gap-3 z-30 relative"
+    class="h-[60px] min-h-[60px] bg-panel border-b border-border flex items-center px-4 gap-3 z-30"
   >
-    <!-- Hamburger -->
+    <!-- Hamburger / sidebar toggle -->
     <button
       class="w-9 h-9 flex items-center justify-center rounded-lg border border-border text-muted hover:bg-hover hover:text-ink transition-all"
       @click="$emit('toggle-sidebar')"
@@ -68,12 +66,15 @@ const pageLabel = () => route.meta?.label || 'Dashboard';
       <Menu :size="18" />
     </button>
 
-    <!-- Breadcrumb -->
-    <div class="flex items-center gap-2 text-[13px] text-muted">
-      <span>PDRRMO</span>
+    <!-- Breadcrumb — reads route.meta.label reactively -->
+    <nav class="flex items-center gap-2 text-[13px] text-muted">
+      <span>NegrosWatch</span>
       <span class="text-faint">›</span>
-      <span class="text-ink font-medium">{{ pageLabel() }}</span>
-    </div>
+      <!-- route.meta.label is reactive; updates on every navigation automatically -->
+      <span class="text-ink font-medium">{{
+        route.meta?.label ?? 'Dashboard'
+      }}</span>
+    </nav>
 
     <!-- Right side -->
     <div class="ml-auto flex items-center gap-2">
@@ -84,10 +85,10 @@ const pageLabel = () => route.meta?.label || 'Dashboard';
         {{ clock }}
       </div>
 
-      <!-- Notifications -->
+      <!-- Notification bell -->
       <div class="relative">
         <button
-          class="w-9 h-9 flex items-center justify-center rounded-lg border border-border text-muted hover:bg-hover hover:text-ink transition-all relative"
+          class="relative w-9 h-9 flex items-center justify-center rounded-lg border border-border text-muted hover:bg-hover hover:text-ink transition-all"
           @click="notifOpen = !notifOpen"
         >
           <Bell :size="16" />
@@ -96,18 +97,17 @@ const pageLabel = () => route.meta?.label || 'Dashboard';
           />
         </button>
 
-        <!-- Notification drawer -->
         <Transition name="slide-down">
           <div
             v-if="notifOpen"
-            class="absolute right-0 top-11 w-80 bg-panel border border-border rounded-xl shadow-2xl z-50"
+            class="absolute right-0 top-11 w-80 bg-panel border border-border rounded-xl shadow-2xl z-50 overflow-hidden"
           >
             <div
               class="flex items-center justify-between px-4 py-3 border-b border-border"
             >
               <p class="font-semibold text-[13px] text-ink">Notifications</p>
               <button
-                class="text-muted hover:text-ink"
+                class="text-muted hover:text-ink transition-colors"
                 @click="notifOpen = false"
               >
                 <X :size="14" />
@@ -117,7 +117,7 @@ const pageLabel = () => route.meta?.label || 'Dashboard';
               <div
                 v-for="(n, i) in notifications"
                 :key="i"
-                class="flex gap-3 px-4 py-3 border-b border-border/50 hover:bg-hover transition-all cursor-default"
+                class="flex gap-3 px-4 py-3 border-b border-border/50 hover:bg-hover transition-all"
               >
                 <div class="flex-1">
                   <p class="text-[12.5px] font-semibold text-ink mb-0.5">
@@ -139,6 +139,27 @@ const pageLabel = () => route.meta?.label || 'Dashboard';
             </div>
           </div>
         </Transition>
+
+        <!-- click-away -->
+        <div
+          v-if="notifOpen"
+          class="fixed inset-0 z-40"
+          @click="notifOpen = false"
+        />
+      </div>
+
+      <!-- User chip -->
+      <div
+        class="hidden md:flex items-center gap-2 bg-card border border-border rounded-lg px-3 py-1.5"
+      >
+        <div
+          class="w-6 h-6 rounded-full bg-primary flex items-center justify-center text-[10px] font-bold text-white"
+        >
+          {{ auth.user.initials }}
+        </div>
+        <span class="text-[12px] text-muted">{{
+          auth.user.name.split(' ')[0]
+        }}</span>
       </div>
     </div>
   </header>
